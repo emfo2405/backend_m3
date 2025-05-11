@@ -48,3 +48,30 @@ const ExperienceSchema = new mongoose.Schema({
     }
 
 });
+
+const Jobexperiences = mongoose.model("Jobexperiences", ExperienceSchema);
+
+//Skapar routes 
+app.get("/api", async (req, res) => {
+    res.json({message: "Välkommen till mitt API"})
+});
+
+//Funktion för att hämta in data från databas
+app.get("/jobexperiences", async(req, res) => {
+    try{
+let result = await Jobexperiences.find({});
+
+        return res.json(result);
+    }catch(error){
+        return res.status(500).json(error);
+    }
+});
+
+
+
+
+
+//Kontroll av server
+app.listen(port, () => {
+    console.log("Server is running on port: " + port);
+});
