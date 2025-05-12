@@ -100,7 +100,7 @@ app.post("/jobexperiences", async(req,res) => {
         if(!companyName || !jobTitle || !place || !startDate || !endDate || !jobDescription) {
                     //Error meddelamde
                     errors.message = "Companyname, jobtitle, location, startdate, enddate och description måste vara ifyllda";
-                    errors.detail = "Du måste fylla i companyname, jobtitle, location, startdate, enddate och description i JSON";
+                    errors.detail = "Du måste fylla i companyname, jobtitle, place, startdate, enddate och jobdescription i JSON";
             
                     //response kod
                     errors.https_response.message = "Bad request";
@@ -138,11 +138,25 @@ try {
     res.status(400).json({message: "Uppdateringen lyckades inte", error});
 }
 
-
-   
 });
 
+//Funktion för att radera inlägg i databasen
+app.delete("/jobexperiences/:id", async(req, res) => {
+    id= req.params.id;
+    try {
+        let deleteExperience = await Jobexperience.deleteOne({_id: id})
 
+        if(deleteExperience.matchedCount === 0) {
+            res.status(404).json({message: "Erfarenheten hittades inte"});
+        } 
+    
+         res.json({message: "Erfarenheten har raderats", deleteExperience})
+    
+        
+    } catch(error) {
+        res.status(400).json({message: "Raderingen lyckades inte", error});
+    }
+});
 
 
 //Kontroll av server
