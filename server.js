@@ -18,12 +18,12 @@ mongoose.connect("mongodb://127.0.0.1:27017/experience").then(() => {
 
 //Schema för arbetslivserfarenheter
 const ExperienceSchema = new mongoose.Schema({
-    companyname: {
+    companyName: {
         type: String, 
         required: true
     },
 
-    jobtitle: {
+    jobTitle: {
         type: String, 
         required: true
     },
@@ -33,17 +33,17 @@ const ExperienceSchema = new mongoose.Schema({
         required: true
     },
 
-    startdate: {
+    startDate: {
         type: Date, 
         required: true
     },
 
-    enddate: {
+    endDate: {
         type: Date, 
         required: true
     },
 
-    description: {
+    jobDescription: {
         type: String, 
         required: true
     }
@@ -71,20 +71,20 @@ let result = await Jobexperience.find({});
 //Funktion för att lägga in ny data
 app.post("/jobexperiences", async(req,res) => {
     //Hämtar in data från webbplats
-    let companyname = req.body.cvcompanyname;
-    let jobtitle = req.body.cvjobtitle;
-    let place = req.body.cvplace;
-    let startdate = req.body.cvstartdate;
-    let enddate = req.body.cvenddate;
-    let description = req.body.cvdescription;
+    let companyName = req.body.companyName;
+    let jobTitle = req.body.jobTitle;
+    let place = req.body.place;
+    let startDate = req.body.startDate;
+    let endDate = req.body.endDate;
+    let jobDescription = req.body.jobDescription;
 
     let newExperience = {
-        companyname: companyname,
-        jobtitle: jobtitle,
+        companyName: companyName,
+        jobTitle: jobTitle,
         place: place,
-        startdate: startdate,
-        enddate: enddate,
-        description: description
+        startDate: startDate,
+        endDate: endDate,
+        jobDescription: jobDescription
     }
 
         //Struktur för error-meddelanden
@@ -97,7 +97,7 @@ app.post("/jobexperiences", async(req,res) => {
         };
     
         //Om inte alla fält är ifyllda visas ett felmeddelande
-        if(!companyname || !jobtitle || !location || !startdate || !enddate || !description) {
+        if(!companyName || !jobTitle || !place || !startDate || !endDate || !jobDescription) {
                     //Error meddelamde
                     errors.message = "Companyname, jobtitle, location, startdate, enddate och description måste vara ifyllda";
                     errors.detail = "Du måste fylla i companyname, jobtitle, location, startdate, enddate och description i JSON";
@@ -118,6 +118,28 @@ app.post("/jobexperiences", async(req,res) => {
     } catch(error) {
         return res.status(400).json(error);
     }
+});
+
+app.put("/jobexperiences/:id", async(req, res) => {
+let id = req.params.id;
+let { companyName, jobTitle, place, startDate, endDate, jobDescription } = req.body;
+
+try {
+    let updatedExperience = await Jobexperience.updateOne({_id: id}, {$set: {companyName, jobTitle, place, startDate, endDate, jobDescription}});
+
+    if(updatedExperience.matchedCount === 0) {
+        res.status(404).json({message: "Erfarenheten hittades inte"});
+    } 
+
+     res.json({message: "Erfarenheten har uppdaterats", updatedExperience})
+
+    
+} catch(error) {
+    res.status(400).json({message: "Uppdateringen lyckades inte", error});
+}
+
+
+   
 });
 
 
