@@ -27,7 +27,7 @@ const ExperienceSchema = new mongoose.Schema({
         required: true
     },
 
-    location: {
+    place: {
         type: String, 
         required: true
     },
@@ -43,23 +43,23 @@ const ExperienceSchema = new mongoose.Schema({
     },
 
     description: {
-        type: Date, 
+        type: String, 
         required: true
     }
 
 });
 
-const Jobexperiences = mongoose.model("Jobexperiences", ExperienceSchema);
+const Jobexperience = mongoose.model("Jobexperience", ExperienceSchema);
 
 //Skapar routes 
 app.get("/api", async (req, res) => {
-    res.json({message: "Välkommen till mitt API"})
+    res.json({message: "Welcome to this API"})
 });
 
 //Funktion för att hämta in data från databas
 app.get("/jobexperiences", async(req, res) => {
     try{
-let result = await Jobexperiences.find({});
+let result = await Jobexperience.find({});
 
         return res.json(result);
     }catch(error){
@@ -67,6 +67,16 @@ let result = await Jobexperiences.find({});
     }
 });
 
+//Funktion för att lägga in ny data
+app.post("/jobexperiences", async(req,res) => {
+    try{
+        let result = await Jobexperience.create(req.body);
+
+        return res.json(result);
+    } catch(error) {
+        return res.status(400).json(error);
+    }
+})
 
 
 
